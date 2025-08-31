@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>STEM Simulation Lab</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #222;
+      color: white;
+      padding: 0.75rem 1rem;
+      font-size: 1.2rem;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #simulation {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+    }
+    #controls {
+      background: #f4f4f4;
+      border-top: 1px solid #ddd;
+      padding: 1rem 1.5rem;
+      box-sizing: border-box;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+      max-height: 220px; /* default visible height */
+    }
+    #controls.minimized {
+      max-height: 0;
+      padding: 0;
+      border-top: none;
+    }
+    .control-toggle {
+      background: #222;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #controls h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+      color: #333;
+    }
+    .control-group {
+      margin-bottom: 1.25rem;
+    }
+    .control-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #444;
+    }
+    .control-group input[type=range] {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>STEM Simulation Lab</header>
+  <main>
+    <section id="simulation">
+      <!-- p5.js canvas will be injected here -->
+    </section>
+    <button class="control-toggle" onclick="toggleControls()">Toggle Controls</button>
+    <section id="controls">
+      <h3>Controls</h3>
+      <!-- Example control group: Slider for Amplitude -->
+      <div class="control-group">
+        <label for="amplitude">Amplitude</label>
+        <input type="range" id="amplitude" min="10" max="100" value="50">
+      </div>
+      <!-- Example control group: Slider for Frequency -->
+      <div class="control-group">
+        <label for="frequency">Frequency</label>
+        <input type="range" id="frequency" min="1" max="10" value="5">
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // -----------------------------
+    // SIMULATION CONFIGURATION AREA
+    // -----------------------------
+    // This section is meant to be extended by LLMs.
+    // For new use cases:
+    //   1. Add new input controls (sliders, dropdowns, checkboxes) into #controls.
+    //   2. Reference them in setup() to capture DOM elements.
+    //   3. Use their values inside draw() to affect the simulation.
+    //   4. Replace the sine wave logic with other models (pendulum, projectile, circuit, etc.).
+
+    let amplitudeSlider, frequencySlider;
+    let angle = 0;
+
+    function setup() {
+      // Create a canvas that adjusts with window size
+      let canvas = createCanvas(windowWidth, windowHeight - 220 - 50); // subtract header + control area
+      canvas.parent('simulation');
+
+      // Link sliders from DOM controls
+      amplitudeSlider = document.getElementById("amplitude");
+      frequencySlider = document.getElementById("frequency");
+    }
+
+    function draw() {
+      background(255);
+      translate(width/2, height/2);
+
+      // Get values from sliders
+      let amplitude = parseFloat(amplitudeSlider.value);
+      let frequency = parseFloat(frequencySlider.value);
+
+      // Example simulation: Sine wave changing with amplitude and frequency
+      stroke(30);
+      strokeWeight(2);
+      noFill();
+
+      beginShape();
+      for (let x = -width/2; x < width/2; x += 5) {
+        let y = amplitude * sin((x * 0.02) * frequency + angle);
+        vertex(x, y);
+      }
+      endShape();
+
+      angle += 0.03;
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight - 220 - 50);
+    }
+
+    // -----------------------------
+    // CONTROL PANEL BEHAVIOR
+    // -----------------------------
+    function toggleControls() {
+      const controls = document.getElementById('controls');
+      controls.classList.toggle('minimized');
+    }
+  </script>
+</body>
+</html>
