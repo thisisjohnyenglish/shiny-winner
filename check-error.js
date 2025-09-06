@@ -1,3 +1,4 @@
+// evaluator 1.0
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
@@ -112,4 +113,5 @@ if (require.main === module) {
             console.error('Unhandled error during evaluation:', err);
             process.exit(1); // Indicate critical failure
         });
+
 }
