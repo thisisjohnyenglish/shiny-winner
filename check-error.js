@@ -1,4 +1,3 @@
-// evaluator 1.0
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
@@ -115,3 +114,4 @@ if (require.main === module) {
         });
 
 }
+
