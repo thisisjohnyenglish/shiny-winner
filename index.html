@@ -1,460 +1,157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Programming Simulation</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-    <style>
-        /* HOST PAGE CONSISTENCY */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            line-height: 1.5;
-            margin: 0;
-            padding: 1rem;
-            color: inherit;
-            background-color: transparent;
-        }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            max-width: 800px;
-            margin: auto;
-            width: 100%;
-        }
-        
-        #canvas-container {
-            width: 100%;
-            /* Aspect ratio is set by p5.js based on calculated layout */
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* CONTROLS STYLING */
-        #controls, #info-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem 1rem;
-            justify-content: flex-start;
-            align-items: center;
-            width: 100%;
-            padding: 0;
-            border: none;
-        }
-
-        button, input[type="range"], label {
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            color: inherit;
-            background-color: rgba(128, 128, 128, 0.1);
-            border: 1px solid rgba(128, 128, 128, 0.2);
-        }
-        
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        button:hover:not(:disabled) {
-            background-color: rgba(128, 128, 128, 0.2);
-        }
-        
-        button:focus-visible, input[type="range"]:focus-visible {
-            outline: 2px solid #2e7d32;
-            outline-offset: 2px;
-        }
-
-        input[type="range"] {
-            accent-color: #2e7d32; /* ACCENT COLOR */
-            max-width: 200px;
-            padding: 0;
-            background: transparent;
-            border: none;
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .slider-container label {
-             background: transparent;
-             border: none;
-             padding: 0;
-        }
-
-        .info-box {
-            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "Liberation Mono", monospace;
-            font-size: 1.1rem;
-            background-color: rgba(128, 128, 128, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            min-width: 4ch;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>STEM Simulation Lab</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #222;
+      color: white;
+      padding: 0.75rem 1rem;
+      font-size: 1.2rem;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #simulation {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+    }
+    #controls {
+      background: #f4f4f4;
+      border-top: 1px solid #ddd;
+      padding: 1rem 1.5rem;
+      box-sizing: border-box;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+      max-height: 220px; /* default visible height */
+    }
+    #controls.minimized {
+      max-height: 0;
+      padding: 0;
+      border-top: none;
+    }
+    .control-toggle {
+      background: #222;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #controls h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+      color: #333;
+    }
+    .control-group {
+      margin-bottom: 1.25rem;
+    }
+    .control-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #444;
+    }
+    .control-group input[type=range] {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-<main>
-    <div id="canvas-container"></div>
+  <header>STEM Simulation Lab</header>
+  <main>
+    <section id="simulation">
+      <!-- p5.js canvas will be injected here -->
+    </section>
+    <button class="control-toggle" onclick="toggleControls()">Toggle Controls</button>
     <section id="controls">
-        <button id="brute-force-btn" aria-label="Run brute force algorithm">Run Brute Force</button>
-        <button id="dp-btn" aria-label="Run dynamic programming algorithm">Run Dynamic Programming</button>
-        <button id="reset-btn" aria-label="Reset simulation">🔄 Reset</button>
-        <div class="slider-container">
-            <label for="speed-slider">Speed:</label>
-            <input type="range" id="speed-slider" min="1" max="60" value="45" aria-label="Animation speed">
-            <span id="speed-value">45</span>
-        </div>
+      <h3>Controls</h3>
+      <!-- Example control group: Slider for Amplitude -->
+      <div class="control-group">
+        <label for="amplitude">Amplitude</label>
+        <input type="range" id="amplitude" min="10" max="100" value="50">
+      </div>
+      <!-- Example control group: Slider for Frequency -->
+      <div class="control-group">
+        <label for="frequency">Frequency</label>
+        <input type="range" id="frequency" min="1" max="10" value="5">
+      </div>
     </section>
-    <section id="info-panel">
-        <div>Computations: <span id="computation-count" class="info-box">0</span></div>
-        <div>Min Cost: <span id="min-cost" class="info-box">?</span></div>
-    </section>
-</main>
+  </main>
 
-<script>
-// ====================================================================
-// CONSTANTS & CONFIGURATION
-// ====================================================================
-const COLS = 8;
-const ROWS = 5;
-const MAX_COST = 9;
-const ACCENT_COLOR = '#2e7d32';
+  <script>
+    // -----------------------------
+    // SIMULATION CONFIGURATION AREA
+    // -----------------------------
+    // This section is meant to be extended by LLMs.
+    // For new use cases:
+    //   1. Add new input controls (sliders, dropdowns, checkboxes) into #controls.
+    //   2. Reference them in setup() to capture DOM elements.
+    //   3. Use their values inside draw() to affect the simulation.
+    //   4. Replace the sine wave logic with other models (pendulum, projectile, circuit, etc.).
 
-const STATE = { IDLE: 'IDLE', RUNNING: 'RUNNING', DONE: 'DONE' };
-const EVENT_TYPE = { VISIT: 'VISIT', CACHE_HIT: 'CACHE_HIT', MEMOIZE: 'MEMOIZE', PATH: 'PATH' };
+    let amplitudeSlider, frequencySlider;
+    let angle = 0;
 
-// ====================================================================
-// GLOBAL STATE
-// ====================================================================
-let gridCosts = [];
-let memoTable = [];
-let animationQueue = [];
-let finalPath = [];
-let activeHighlights = [];
+    function setup() {
+      // Create a canvas that adjusts with window size
+      let canvas = createCanvas(windowWidth, windowHeight - 220 - 50); // subtract header + control area
+      canvas.parent('simulation');
 
-let currentState = STATE.IDLE;
-let computationCount = 0;
-let minCost = '?';
-let animationSpeed = 45;
-let frameCounter = 0;
-
-let cellSize, gridWidth, totalGridWidth, gridHeight, gridPadding, memoTableXOffset;
-
-let bruteForceBtn, dpBtn, resetBtn, speedSlider, speedValueSpan, computationCountSpan, minCostSpan;
-
-// ====================================================================
-// p5.js SETUP FUNCTION
-// ====================================================================
-function setup() {
-    let canvasContainer = document.getElementById('canvas-container');
-    calculateLayout(canvasContainer.offsetWidth);
-    let canvasHeight = gridHeight + gridPadding * 2;
-    let canvas = createCanvas(canvasContainer.offsetWidth, canvasHeight);
-    canvas.parent('canvas-container');
-    window.addEventListener('resize', () => {
-        let newWidth = canvasContainer.offsetWidth;
-        calculateLayout(newWidth);
-        resizeCanvas(newWidth, gridHeight + gridPadding * 2);
-    });
-
-    // Initialize UI elements and attach listeners
-    bruteForceBtn = document.getElementById('brute-force-btn');
-    dpBtn = document.getElementById('dp-btn');
-    resetBtn = document.getElementById('reset-btn');
-    speedSlider = document.getElementById('speed-slider');
-    speedValueSpan = document.getElementById('speed-value');
-    computationCountSpan = document.getElementById('computation-count');
-    minCostSpan = document.getElementById('min-cost');
-    
-    bruteForceBtn.addEventListener('click', handleRunBruteForce);
-    dpBtn.addEventListener('click', handleRunDP);
-    resetBtn.addEventListener('click', handleReset);
-    speedSlider.addEventListener('input', (e) => {
-        animationSpeed = parseInt(e.target.value);
-        speedValueSpan.textContent = animationSpeed;
-    });
-    speedValueSpan.textContent = animationSpeed;
-
-    resetSimulation();
-}
-
-// ====================================================================
-// p5.js DRAW LOOP (Main animation loop)
-// ====================================================================
-function draw() {
-    clear(); // Transparent background
-    
-    drawGrid(gridCosts, 0, 'Problem Grid (Costs)');
-    drawGrid(memoTable, memoTableXOffset, 'Memoization Table (Min Cost)');
-    
-    const framesPerStep = Math.max(1, Math.floor(61 - animationSpeed));
-    if (currentState === STATE.RUNNING && frameCounter++ % framesPerStep === 0) {
-        if (animationQueue.length > 0) {
-            processAnimationStep();
-        } else {
-            currentState = STATE.DONE;
-            updateUIState();
-        }
+      // Link sliders from DOM controls
+      amplitudeSlider = document.getElementById("amplitude");
+      frequencySlider = document.getElementById("frequency");
     }
-    
-    drawHighlights();
-    drawPath();
-    
-    computationCountSpan.textContent = computationCount;
-    minCostSpan.textContent = minCost;
-}
 
-// ====================================================================
-// SIMULATION LOGIC & ALGORITHMS
-// ====================================================================
-function resetSimulation() {
-    currentState = STATE.IDLE;
-    animationQueue = [];
-    finalPath = [];
-    activeHighlights = [];
-    computationCount = 0;
-    minCost = '?';
+    function draw() {
+      background(255);
+      translate(width/2, height/2);
 
-    gridCosts = Array(ROWS).fill(0).map(() => 
-        Array(COLS).fill(0).map(() => Math.floor(random(1, MAX_COST + 1)))
-    );
-    memoTable = Array(ROWS).fill(0).map(() => Array(COLS).fill(null));
-    
-    updateUIState();
-}
+      // Get values from sliders
+      let amplitude = parseFloat(amplitudeSlider.value);
+      let frequency = parseFloat(frequencySlider.value);
 
-function handleRunBruteForce() {
-    prepareForRun();
-    solve(0, 0, false);
-    reconstructPath(false);
-    currentState = STATE.RUNNING;
-    updateUIState();
-}
+      // Example simulation: Sine wave changing with amplitude and frequency
+      stroke(30);
+      strokeWeight(2);
+      noFill();
 
-function handleRunDP() {
-    prepareForRun();
-    solve(0, 0, true);
-    reconstructPath(true);
-    currentState = STATE.RUNNING;
-    updateUIState();
-}
+      beginShape();
+      for (let x = -width/2; x < width/2; x += 5) {
+        let y = amplitude * sin((x * 0.02) * frequency + angle);
+        vertex(x, y);
+      }
+      endShape();
 
-function handleReset() {
-    resetSimulation();
-}
-
-function prepareForRun() {
-    currentState = STATE.RUNNING;
-    animationQueue = [];
-    finalPath = [];
-    activeHighlights = [];
-    computationCount = 0;
-    minCost = '?';
-    memoTable = Array(ROWS).fill(0).map(() => Array(COLS).fill(null));
-    updateUIState();
-}
-
-function solve(r, c, useMemoization) {
-    if (r >= ROWS || c >= COLS) return Infinity;
-
-    computationCount++;
-    animationQueue.push({ type: EVENT_TYPE.VISIT, r, c, isDP: useMemoization });
-
-    if (useMemoization && memoTable[r][c] !== null) {
-        animationQueue.push({ type: EVENT_TYPE.CACHE_HIT, r, c });
-        return memoTable[r][c];
+      angle += 0.03;
     }
-    if (r === ROWS - 1 && c === COLS - 1) return gridCosts[r][c];
-    
-    const result = gridCosts[r][c] + Math.min(solve(r, c + 1, useMemoization), solve(r + 1, c, useMemoization));
 
-    if (useMemoization) {
-        memoTable[r][c] = result;
-        animationQueue.push({ type: EVENT_TYPE.MEMOIZE, r, c, value: Math.round(result) });
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight - 220 - 50);
     }
-    return result;
-}
 
-function reconstructPath(wasDP) {
-    let costTable;
-    if (wasDP) {
-        costTable = memoTable;
-        minCost = Math.round(memoTable[0][0]);
-    } else {
-        // For brute force, we need to generate the cost table to find the path.
-        // This is done instantly without animation.
-        costTable = Array(ROWS).fill(0).map(() => Array(COLS).fill(null));
-        function solveForPath(r, c) {
-            if (r >= ROWS || c >= COLS) return Infinity;
-            if (costTable[r][c] !== null) return costTable[r][c];
-            if (r === ROWS - 1 && c === COLS - 1) return gridCosts[r][c];
-            const result = gridCosts[r][c] + Math.min(solveForPath(r, c + 1), solveForPath(r + 1, c));
-            costTable[r][c] = result;
-            return result;
-        }
-        minCost = Math.round(solveForPath(0, 0));
+    // -----------------------------
+    // CONTROL PANEL BEHAVIOR
+    // -----------------------------
+    function toggleControls() {
+      const controls = document.getElementById('controls');
+      controls.classList.toggle('minimized');
     }
-    findPath(costTable);
-}
-
-function findPath(costTable) {
-    let r = 0, c = 0;
-    const path = [];
-    path.push({ r, c });
-    while (r < ROWS - 1 || c < COLS - 1) {
-        let costDown = (r + 1 < ROWS) ? costTable[r + 1][c] : Infinity;
-        let costRight = (c + 1 < COLS) ? costTable[r][c + 1] : Infinity;
-        if (costRight === null) costRight = Infinity;
-        if (costDown === null) costDown = Infinity;
-
-        if (costDown < costRight) r++; else c++;
-        path.push({ r, c });
-    }
-    // Add path events to the end of the animation queue
-    path.forEach(p => animationQueue.push({ type: EVENT_TYPE.PATH, r: p.r, c: p.c }));
-}
-
-// ====================================================================
-// ANIMATION & DRAWING
-// ====================================================================
-function processAnimationStep() {
-    const event = animationQueue.shift();
-    if (!event) return;
-
-    event.startTime = millis();
-    event.duration = Math.max(50, (61 - animationSpeed) * (1000 / 60));
-    
-    if (event.type === EVENT_TYPE.PATH) {
-        finalPath.push(event);
-    } else {
-        if (event.type === EVENT_TYPE.MEMOIZE) {
-            memoTable[event.r][event.c] = event.value;
-        }
-        activeHighlights.push(event);
-    }
-}
-
-function drawHighlights() {
-    let now = millis();
-    activeHighlights = activeHighlights.filter(h => now < h.startTime + h.duration);
-
-    for (const highlight of activeHighlights) {
-        const { type, r, c, isDP } = highlight;
-        const progress = (now - highlight.startTime) / highlight.duration;
-        const alpha = 255 * (1 - progress);
-
-        let xOffset = 0;
-        let fillColor;
-        if (type === EVENT_TYPE.VISIT) {
-            fillColor = isDP ? color(66, 165, 245, alpha) : color(255, 200, 50, alpha);
-        } else if (type === EVENT_TYPE.CACHE_HIT) {
-            xOffset = memoTableXOffset;
-            fillColor = color(46, 125, 50, alpha); // Green for cache hit
-        } else {
-            continue;
-        }
-        
-        noStroke();
-        fill(fillColor);
-        rect(xOffset + c * cellSize, r * cellSize, cellSize, cellSize);
-    }
-}
-
-function drawPath() {
-    if (finalPath.length < 2) return;
-    
-    const drawSinglePath = (xOffset) => {
-        stroke(ACCENT_COLOR);
-        strokeWeight(Math.max(2, cellSize * 0.1));
-        noFill();
-        beginShape();
-        for (const point of finalPath) {
-            vertex(xOffset + (point.c + 0.5) * cellSize, (point.r + 0.5) * cellSize);
-        }
-        endShape();
-    };
-
-    drawSinglePath(0);
-    drawSinglePath(memoTableXOffset);
-}
-
-function drawGrid(data, xOffset, title) {
-    push();
-    translate(xOffset, 0);
-
-    // Draw title
-    fill(getComputedStyle(document.body).color);
-    noStroke();
-    textAlign(CENTER);
-    textSize(Math.max(12, cellSize * 0.3));
-    text(title, gridWidth / 2, -gridPadding / 2);
-    
-    // Draw grid cells
-    for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-            const x = c * cellSize;
-            const y = r * cellSize;
-            
-            stroke(180);
-            strokeWeight(1);
-            noFill();
-            rect(x, y, cellSize, cellSize);
-            
-            const val = data[r][c];
-            fill(getComputedStyle(document.body).color);
-            noStroke();
-            textAlign(CENTER, CENTER);
-            textSize(cellSize * 0.4);
-            text(val !== null ? val : ' ', x + cellSize / 2, y + cellSize / 2);
-        }
-    }
-    
-    // Highlight start and end cells
-    noFill();
-    stroke(ACCENT_COLOR);
-    strokeWeight(3);
-    rect(0, 0, cellSize, cellSize); // Start
-    rect((COLS - 1) * cellSize, (ROWS - 1) * cellSize, cellSize, cellSize); // End
-
-    pop();
-}
-
-// ====================================================================
-// UI & LAYOUT MANAGEMENT
-// ====================================================================
-function updateUIState() {
-    const isRunning = currentState === STATE.RUNNING;
-    bruteForceBtn.disabled = isRunning;
-    dpBtn.disabled = isRunning;
-}
-
-function calculateLayout(containerWidth) {
-    const gap = Math.max(20, containerWidth * 0.05);
-    const availableWidth = containerWidth - gap;
-    
-    gridWidth = availableWidth / 2;
-    cellSize = gridWidth / COLS;
-    gridHeight = cellSize * ROWS;
-    
-    totalGridWidth = containerWidth;
-    memoTableXOffset = gridWidth + gap;
-    gridPadding = Math.max(20, cellSize * 0.5);
-
-    // Translate all drawings by padding
-    translate(gridPadding / 2, gridPadding);
-}
-
-</script>
+  </script>
 </body>
 </html>
